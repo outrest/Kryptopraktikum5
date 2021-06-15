@@ -19,27 +19,28 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Aufgabe1 {
 	public static void main(String[] args) {
 		// AUFGABE A
+
+
 		Prime primtester = new Prime();
 
 		Random rseed = new Random(
 				new Random((long) (Math.random() * 3.5 + 4711)).nextInt());
 		Random rnd = new Random(rseed.nextLong());
 
-		BigInteger p = new BigInteger(1500, rnd);
+		BigInteger primeCandidate = new BigInteger(1500, rnd);
 		long startZeit = System.currentTimeMillis();
-		while (!(primtester.isPrime(p))) {
-			p = new BigInteger(1500, rnd);
+		while (!(primtester.isPrime(primeCandidate))) {
+			primeCandidate = new BigInteger(1500, rnd);
 		}
 		long endZeit = System.currentTimeMillis();
 		long dauer = endZeit - startZeit;
 
 		System.out.println(
 				"Aufgabe 1 a)\nGeneriere eine zufällige 1500-Bit " + "Zahl\n");
-		System.out.println(p);
-		System.out.println(
-				"Prüfe ob dies eine Primzahl ist: " + primtester.isPrime(p));
+		System.out.println(primeCandidate);
+		System.out.println("Prüfe ob dies eine Primzahl ist: " + primtester
+				.isPrime(primeCandidate));
 		System.out.println("Die Berechnung dauerte: " + dauer + "ms\n");
-
 
 
 		// AUFGABE B
@@ -119,7 +120,7 @@ public class Aufgabe1 {
 				"\nAufgabe 1 c) Ver- und Entschlüsselung einer " + "Zahl");
 
 		Cipher rsa = null;
-		byte[] encryptME = {1,3,1,1,2,1,59,7,8,5,23,4,8,1,5};
+		byte[] encryptME = {1, 3, 1, 1, 2, 1, 59, 7, 8, 5, 23, 4, 8, 1, 5};
 		ByteArrayInputStream bais = new ByteArrayInputStream(encryptME);
 		byte[] encrypted;
 		byte[] decrypted;
@@ -134,7 +135,6 @@ public class Aufgabe1 {
 			System.out.println(Arrays.toString(decrypted));
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-
+		}*/
 	}
 }
