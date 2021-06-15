@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.sql.Time;
@@ -46,14 +47,57 @@ public class Aufgabe1 {
 		System.out.println(
 				"Aufgabe 1 b)\nGeneriere einen 3000-Bit " + "Schlüssel\n");
 
+		BigInteger p = new BigInteger(1500, rnd);
 		BigInteger q = new BigInteger(1500, rnd);
 
-		while (!(primtester.isPrime(q))) {
-			q = new BigInteger(1500, rnd);
+		//Fölie 19 Step 1
+		double[] intervall =
+				{Math.pow(2, 1500) / Math.sqrt(2), Math.pow(2, 1500)};
+
+
+		BigDecimal a = new BigDecimal("2");
+		BigInteger b = new BigInteger("1500");
+		MathContext mc = new MathContext("2"); //HIER WEITERARBEITEN
+
+
+		BigDecimal untereGrenze =
+				new BigDecimal(String.valueOf(a.pow(1500).divide(a.sqrt(mc))));
+		System.out.println(untereGrenze);
+
+		BigDecimal interVL =
+				BigDecimal.valueOf(Math.pow(2, 1500) / Math.sqrt(2));
+		BigDecimal interVR = BigDecimal.valueOf(Math.pow(2, 1500));
+		boolean imIntervall = false;
+		while (!imIntervall) {
+			while (!(primtester.isPrime(p))) {
+				p = new BigInteger(1500, rnd);
+			}
+			while (!(primtester.isPrime(q))) {
+				q = new BigInteger(1500, rnd);
+			}
+			BigDecimal differenzDecimal = new BigDecimal(q.subtract(p).abs());
+			if (differenzDecimal.compareTo(interVL) > 0
+			    && differenzDecimal.compareTo(interVR) < 0) {
+				imIntervall = true;
+			}
 		}
 
+		//Fölie 19 Step 2
+		BigInteger n = p.multiply(q);
+		BigInteger phi =
+				p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+		//Fölie 19 Step 4
+		BigInteger e = new BigInteger("65537"); //2^16 + 1
+		BigInteger d = BigInteger.ONE.mod(phi).divide(e); //d = (1 mod phi) / e
 
-		KeyPairGenerator generator = null;
+		BigDecimal anotherD = new BigDecimal(d);
+		BigDecimal dMinusOne = BigDecimal.ONE.divide(anotherD);
+
+
+
+/*
+
+		KeyPairGenerator KeyPairGenerator generator = null;
 		try {
 			generator = KeyPairGenerator.getInstance("RSA");
 		} catch (NoSuchAlgorithmException e) {
