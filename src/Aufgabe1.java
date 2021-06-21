@@ -1,36 +1,16 @@
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.KeyGeneratorSpi;
-import javax.crypto.NoSuchPaddingException;
-import java.awt.*;
-import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
-import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.sql.Time;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Formatter;
+import java.math.RoundingMode;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Aufgabe1 {
 	public static void main(String[] args) {
-		// AUFGABE A
-
-
-		Prime primtester = new Prime();
-
-		Random rseed = new Random(
-				new Random((long) (Math.random() * 3.5 + 4711)).nextInt());
-		Random rnd = new Random(rseed.nextLong());
+		int numbits = 1500;
 
 		BigInteger primeCandidate = new BigInteger(1500, rnd);
 		long startZeit = System.currentTimeMillis();
-		while (!(primtester.isPrime(primeCandidate))) {
-			primeCandidate = new BigInteger(1500, rnd);
+		while (!(Prime.isPrime(primeCandidate))) {
+			primeCandidate = BigInteger.probablePrime(numbits, new Random());
 		}
 		long endZeit = System.currentTimeMillis();
 		long dauer = endZeit - startZeit;
@@ -38,103 +18,78 @@ public class Aufgabe1 {
 		System.out.println(
 				"Aufgabe 1 a)\nGeneriere eine zufällige 1500-Bit " + "Zahl\n");
 		System.out.println(primeCandidate);
-		System.out.println("Prüfe ob dies eine Primzahl ist: " + primtester
+		System.out.println("Prüfe ob dies eine Primzahl ist: " + Prime
 				.isPrime(primeCandidate));
 		System.out.println("Die Berechnung dauerte: " + dauer + "ms\n");
 
-
-		// AUFGABE B
-
+		//!!! AUFGABE B!!!
 		System.out.println(
-				"Aufgabe 1 b)\nGeneriere einen 3000-Bit " + "Schlüssel\n");
-
-		BigInteger p = new BigInteger(1500, rnd);
-		BigInteger q = new BigInteger(1500, rnd);
-
-		//Fölie 19 Step 1
-		double[] intervall =
-				{Math.pow(2, 1500) / Math.sqrt(2), Math.pow(2, 1500)};
+				"Aufgabe 1 b)\nGeneriere einen 3000-Bit " + "Schlüssel");
 
 
-		BigDecimal a = new BigDecimal("2");
-		BigInteger b = new BigInteger("1500");
-		MathContext mc = new MathContext("2"); //HIER WEITERARBEITEN
+		startZeit = System.currentTimeMillis();
+		BigInteger p = BigInteger.probablePrime(numbits, new Random());
 
+		BigInteger q = BigInteger.probablePrime(numbits, new Random());
 
-		BigDecimal untereGrenze =
-				new BigDecimal(String.valueOf(a.pow(1500).divide(a.sqrt(mc))));
-		System.out.println(untereGrenze);
-
-		BigDecimal interVL =
-				BigDecimal.valueOf(Math.pow(2, 1500) / Math.sqrt(2));
-		BigDecimal interVR = BigDecimal.valueOf(Math.pow(2, 1500));
-		boolean imIntervall = false;
-		while (!imIntervall) {
-			while (!(primtester.isPrime(p))) {
-				p = new BigInteger(1500, rnd);
-			}
-			while (!(primtester.isPrime(q))) {
-				q = new BigInteger(1500, rnd);
-			}
-			BigDecimal differenzDecimal = new BigDecimal(q.subtract(p).abs());
-			if (differenzDecimal.compareTo(interVL) > 0
-			    && differenzDecimal.compareTo(interVR) < 0) {
-				imIntervall = true;
-			}
+		if (p.compareTo(q) > 0) {
+			BigInteger tmp = p;
+			p = q;
+			q = tmp;
 		}
 
+		dauer = System.currentTimeMillis() - startZeit;
+		System.out.println("Das Finden von zwei Primzahlen mit 1500 Bits "
+		                   + "innerhalb des oben angegebenen Intervalls "
+		                   + "dauerte " + dauer + " ms");
+		System.out.println("P = " + p + "\nQ = " + q);
 		//Fölie 19 Step 2
 		BigInteger n = p.multiply(q);
 		BigInteger phi =
 				p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
-		//Fölie 19 Step 4
+
 		BigInteger e = new BigInteger("65537"); //2^16 + 1
-		BigInteger d = BigInteger.ONE.mod(phi).divide(e); //d = (1 mod phi) / e
+		//Fölie 19 Step 4
+		BigInteger d = e.modPow(BigInteger.valueOf(-1), phi);
+		//Termumformung e^-1 mod phi
+		System.out.println("\nN: " + n);
+		System.out.println("\nPhi: \n" + phi);
+		System.out.println("d: \n" + d);
 
-		BigDecimal anotherD = new BigDecimal(d);
-		BigDecimal dMinusOne = BigDecimal.ONE.divide(anotherD);
+		//Klartext
+		BigInteger x = new BigInteger("4711");
 
-
-
-/*
-
-		KeyPairGenerator KeyPairGenerator generator = null;
-		try {
-			generator = KeyPairGenerator.getInstance("RSA");
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		generator.initialize(3000);
-		KeyPair pair = generator.generateKeyPair();
-
-		PrivateKey privateKey = pair.getPrivate();
-		PublicKey publicKey = pair.getPublic();
-
-		System.out.println(privateKey);
-		System.out.println(publicKey);
-
-
-		// AUFGABE C
-
+		//VERSCHLÜSSELN!
 		System.out.println(
-				"\nAufgabe 1 c) Ver- und Entschlüsselung einer " + "Zahl");
+				"\nBerechnung der Verschlüsselung der Zahl " + x + "\n");
+		BigInteger verschluesselung = x.modPow(e, n);
+		System.out.println("Verschlüsselung=\n" + verschluesselung);
+		//ENTSCHLÜSSELUNG!
+		BigInteger entschluesselung = verschluesselung.modPow(d, n);
+		System.out.println("Entschlüsselung=\n" + entschluesselung);
+		System.out.println("BEEP BUUP BOOP! ... Fertig.");
 
-		Cipher rsa = null;
-		byte[] encryptME = {1, 3, 1, 1, 2, 1, 59, 7, 8, 5, 23, 4, 8, 1, 5};
-		ByteArrayInputStream bais = new ByteArrayInputStream(encryptME);
-		byte[] encrypted;
-		byte[] decrypted;
-		try {
-			rsa = Cipher.getInstance("RSA");
-			rsa.init(Cipher.ENCRYPT_MODE, publicKey);
-			encrypted = rsa.doFinal(encryptME);
-			rsa.init(Cipher.DECRYPT_MODE, privateKey);
-			decrypted = rsa.doFinal(encrypted);
-			System.out.println(Arrays.toString(encryptME));
-			System.out.println(Arrays.toString(encrypted));
-			System.out.println(Arrays.toString(decrypted));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+	}
+
+	public static boolean isImIntervall(BigInteger zahl, int numbits) {
+		BigDecimal a = new BigDecimal("2");
+		BigDecimal redundancy = a.pow(numbits);
+		return zahl.compareTo(redundancy
+				                      .divide(BigDecimal.valueOf(Math.sqrt(2)),
+				                              RoundingMode.HALF_UP)
+				                      .toBigInteger()) > 0
+		       && zahl.compareTo(redundancy.toBigInteger()) < 0;
+	}
+
+	public static BigInteger generatePrime(int numBits) {
+		//	MathContext mc = new MathContext(1, RoundingMode.UP);
+		BigInteger probablePrime;
+		do {
+			probablePrime = new BigInteger(numBits, new Random());
+		} while (!(Prime.isPrime(probablePrime, 3)) && !(isImIntervall(
+				probablePrime, numBits)));
+		return probablePrime;
 	}
 }
+
+
