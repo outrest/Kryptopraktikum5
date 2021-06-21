@@ -4,10 +4,12 @@ import java.math.RoundingMode;
 import java.util.Random;
 
 public class Aufgabe1 {
+
 	public static void main(String[] args) {
 		int numbits = 1500;
 
-		BigInteger primeCandidate = new BigInteger(1500, rnd);
+		BigInteger primeCandidate =
+				BigInteger.probablePrime(numbits, new Random());
 		long startZeit = System.currentTimeMillis();
 		while (!(Prime.isPrime(primeCandidate))) {
 			primeCandidate = BigInteger.probablePrime(numbits, new Random());
