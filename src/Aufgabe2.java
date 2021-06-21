@@ -5,22 +5,27 @@ import java.math.BigInteger;
 import static java.util.Arrays.stream;
 
 public class Aufgabe2 {
-	public static void main(String[] args) {
-		System.out.println("Eat my bat!");
+	private Aufgabe1 aufg1;
+	BigInteger x;
+	BigInteger p;
+	BigInteger q;
+	BigInteger d;
+	int n;
 
+	public void ausfuehren() {
+		System.out.println(
+				"-----------------------------------------------------------------------------\nFühre Aufgabe 2 "
+				+ "aus:\n\n");
 
+		//1.
+		BigInteger xp = x.mod(p);
+		BigInteger xq = x.mod(q);
+		BigInteger dp = d.mod(p.subtract(BigInteger.ONE));
+		BigInteger dq = d.mod(q.subtract(BigInteger.ONE));
 
-		BigInteger xp;
-		BigInteger xq;
-		BigInteger dp;
-		BigInteger dq;
-
-
-		BigInteger d = new BigInteger("1");
-		BigDecimal anotherD = new BigDecimal(d);
-		BigDecimal dMinusOne = BigDecimal.ONE.divide(anotherD);
-		d=d.modInverse(d);
-		System.out.println(d);
+		//2.
+		BigInteger yp = xp.modPow(dp, p);
+		BigInteger yq = xq.modPow(dq, q);
 
 
 

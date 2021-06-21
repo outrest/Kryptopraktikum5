@@ -4,35 +4,65 @@ import java.math.RoundingMode;
 import java.util.Random;
 
 public class Aufgabe1 {
+	BigInteger p;
+	BigInteger q;
+	BigInteger d;
+	BigInteger verschluesselung;
+	int numBits;
+	int klartext;
 
-	public static void main(String[] args) {
-		int numbits = 1500;
+	public Aufgabe1(int numbits, int klartext) {
+		numBits = numbits;
+		this.klartext = klartext;
+		ausfuehren();
+	}
 
-		BigInteger primeCandidate =
-				BigInteger.probablePrime(numbits, new Random());
+	public BigInteger getP() {
+		return p;
+	}
+
+	public BigInteger getQ() {
+		return q;
+	}
+
+	public BigInteger getD() {
+		return d;
+	}
+
+	public int getNumBits() {
+		return numBits;
+	}
+
+	public int getKlartext() {
+		return klartext;
+	}
+
+	public BigInteger getVerschluesselung(){
+		return verschluesselung;
+	}
+	public void ausfuehren() {
+		//!!!!!!!!!!!!!!!!!!! AUFGABE A !!!!!!!!!!!!!!!!!!!!
 		long startZeit = System.currentTimeMillis();
-		while (!(Prime.isPrime(primeCandidate))) {
-			primeCandidate = BigInteger.probablePrime(numbits, new Random());
-		}
-		long endZeit = System.currentTimeMillis();
-		long dauer = endZeit - startZeit;
+		BigInteger primeCandidate =
+				BigInteger.probablePrime(numBits, new Random());
+		long dauer = System.currentTimeMillis() - startZeit;
 
 		System.out.println(
-				"Aufgabe 1 a)\nGeneriere eine zufällige 1500-Bit " + "Zahl\n");
+				"Aufgabe 1 a)\nGeneriere eine zufällige 1500-Bit " + "Zahl");
 		System.out.println(primeCandidate);
-		System.out.println("Prüfe ob dies eine Primzahl ist: " + Prime
-				.isPrime(primeCandidate));
 		System.out.println("Die Berechnung dauerte: " + dauer + "ms\n");
 
-		//!!! AUFGABE B!!!
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! AUFGABE B
 		System.out.println(
 				"Aufgabe 1 b)\nGeneriere einen 3000-Bit " + "Schlüssel");
 
 
 		startZeit = System.currentTimeMillis();
-		BigInteger p = BigInteger.probablePrime(numbits, new Random());
+		do {
+			p = BigInteger.probablePrime(numBits, new Random());
+			q = BigInteger.probablePrime(numBits, new Random());
+		} while (isImIntervall(p, numBits) && isImIntervall(q, numBits));
 
-		BigInteger q = BigInteger.probablePrime(numbits, new Random());
 
 		if (p.compareTo(q) > 0) {
 			BigInteger tmp = p;
@@ -52,28 +82,25 @@ public class Aufgabe1 {
 
 		BigInteger e = new BigInteger("65537"); //2^16 + 1
 		//Fölie 19 Step 4
-		BigInteger d = e.modPow(BigInteger.valueOf(-1), phi);
+		d = e.modPow(BigInteger.valueOf(-1), phi);
 		//Termumformung e^-1 mod phi
 		System.out.println("\nN: " + n);
-		System.out.println("\nPhi: \n" + phi);
-		System.out.println("d: \n" + d);
-
-		//Klartext
-		BigInteger x = new BigInteger("4711");
+		System.out.println("Phi: " + phi);
+		System.out.println("d: " + d);
 
 		//VERSCHLÜSSELN!
 		System.out.println(
-				"\nBerechnung der Verschlüsselung der Zahl " + x + "\n");
-		BigInteger verschluesselung = x.modPow(e, n);
+				"\nBerechnung der Verschlüsselung der Zahl " + klartext +
+				"\n");
+		verschluesselung = BigInteger.valueOf(klartext).modPow(e, n);
 		System.out.println("Verschlüsselung=\n" + verschluesselung);
 		//ENTSCHLÜSSELUNG!
 		BigInteger entschluesselung = verschluesselung.modPow(d, n);
 		System.out.println("Entschlüsselung=\n" + entschluesselung);
-		System.out.println("BEEP BUUP BOOP! ... Fertig.");
-
+		System.out.println("\nBEEP BUUP BOOP! ... Fertig.\n");
 	}
 
-	public static boolean isImIntervall(BigInteger zahl, int numbits) {
+	public boolean isImIntervall(BigInteger zahl, int numbits) {
 		BigDecimal a = new BigDecimal("2");
 		BigDecimal redundancy = a.pow(numbits);
 		return zahl.compareTo(redundancy
