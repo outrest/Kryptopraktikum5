@@ -109,16 +109,6 @@ public class Aufgabe1 {
 				                      .toBigInteger()) > 0
 		       && zahl.compareTo(redundancy.toBigInteger()) < 0;
 	}
-
-	public static BigInteger generatePrime(int numBits) {
-		//	MathContext mc = new MathContext(1, RoundingMode.UP);
-		BigInteger probablePrime;
-		do {
-			probablePrime = new BigInteger(numBits, new Random());
-		} while (!(Prime.isPrime(probablePrime, 3)) && !(isImIntervall(
-				probablePrime, numBits)));
-		return probablePrime;
-	}
 }
 
 
