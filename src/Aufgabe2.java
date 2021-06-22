@@ -59,7 +59,7 @@ public class Aufgabe2 {
 		cq = null;
 		vorberechnen();
 	}
-
+	//Schlüsselunabhängige Konstanten ausrechnen
 	public void vorberechnen() {
 		cp = q.modPow(BigInteger.ZERO.subtract(BigInteger.ONE), p);
 		cq = p.modPow(BigInteger.ZERO.subtract(BigInteger.ONE), q);

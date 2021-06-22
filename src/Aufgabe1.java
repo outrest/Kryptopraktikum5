@@ -56,8 +56,8 @@ public class Aufgabe1 {
 
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! AUFGABE B
 		System.out.println(
-				"Aufgabe 1 b)\nGeneriere zwei " +numBits/2+ "-Bit Schlüssel");
-
+				"Aufgabe 1 b)\nGeneriere zwei " +numBits/2+ "-Bit Primszahlen"
+				+ " für einen "+numBits+"-Bit Schlüssel");
 
 		startZeit = System.currentTimeMillis();
 		do {
@@ -84,7 +84,7 @@ public class Aufgabe1 {
 		//Folie 19 Step 4
 		d = e.modPow(BigInteger.valueOf(-1), phi);
 		//Termumformung e^-1 mod phi
-		System.out.println("\nN: " + n);
+		System.out.println("\nn: " + n);
 		System.out.println("Phi: " + phi);
 		System.out.println("d: " + d);
 
