@@ -10,11 +10,16 @@ public class Aufgabe1 {
 	BigInteger verschluesselung;
 	int numBits;
 	int klartext;
+	BigInteger n;
 
 	public Aufgabe1(int numbits, int klartext) {
 		numBits = numbits;
 		this.klartext = klartext;
 		ausfuehren();
+	}
+
+	public BigInteger getn() {
+		return n;
 	}
 
 	public BigInteger getP() {
@@ -29,17 +34,10 @@ public class Aufgabe1 {
 		return d;
 	}
 
-	public int getNumBits() {
-		return numBits;
-	}
-
-	public int getKlartext() {
-		return klartext;
-	}
-
-	public BigInteger getVerschluesselung(){
+	public BigInteger getVerschluesselung() {
 		return verschluesselung;
 	}
+
 	public void ausfuehren() {
 		//!!!!!!!!!!!!!!!!!!! AUFGABE A !!!!!!!!!!!!!!!!!!!!
 		long startZeit = System.currentTimeMillis();
@@ -48,35 +46,33 @@ public class Aufgabe1 {
 		long dauer = System.currentTimeMillis() - startZeit;
 
 		System.out.println(
-				"Aufgabe 1 a)\nGeneriere eine zufällige 1500-Bit " + "Zahl");
+				"Aufgabe 1 a)\nGeneriere eine zufällige " +numBits+ "-Bit Zahl");
 		System.out.println(primeCandidate);
 		System.out.println("Die Berechnung dauerte: " + dauer + "ms\n");
 
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! AUFGABE B
 		System.out.println(
-				"Aufgabe 1 b)\nGeneriere einen 3000-Bit " + "Schlüssel");
+				"Aufgabe 1 b)\nGeneriere zwei " +numBits/2+ "-Bit Schlüssel");
 
 
 		startZeit = System.currentTimeMillis();
 		do {
-			p = BigInteger.probablePrime(numBits, new Random());
-			q = BigInteger.probablePrime(numBits, new Random());
+			p = BigInteger.probablePrime(numBits/2, new Random());
+			q = BigInteger.probablePrime(numBits/2, new Random());
 		} while (isImIntervall(p, numBits) && isImIntervall(q, numBits));
-
-
+		dauer = System.currentTimeMillis() - startZeit;
 		if (p.compareTo(q) > 0) {
 			BigInteger tmp = p;
 			p = q;
 			q = tmp;
 		}
-
-		dauer = System.currentTimeMillis() - startZeit;
-		System.out.println("Das Finden von zwei Primzahlen mit 1500 Bits "
-		                   + "innerhalb des oben angegebenen Intervalls "
+		System.out.println("Das Finden von zwei Primzahlen mit "+numBits/2+
+		                   " Bits "
+		                   + "innerhalb des vom BSI angegebenen Intervalls "
 		                   + "dauerte " + dauer + " ms");
 		System.out.println("P = " + p + "\nQ = " + q);
 		//Fölie 19 Step 2
-		BigInteger n = p.multiply(q);
+		n = p.multiply(q);
 		BigInteger phi =
 				p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
 
